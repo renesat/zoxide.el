@@ -107,12 +107,12 @@ The second argument ARGS is passed to zoxide directly, like query -l"
   (zoxide-run t "remove" path))
 
 ;;;###autoload
-(defun zoxide-query-with (query)
+(defun zoxide-query-with (&rest query)
   "Search zoxide database with QUERY by calling zoxide query.
 When calling interactively, it will open a buffer to show results.  Otherwise,
 a list of paths is returned."
   (interactive "squery: ")
-  (let ((results  (zoxide-run nil "query" query)))
+  (let ((results  (apply #'zoxide-run (append '(nil "query") query))))
     (if (called-interactively-p 'any)
         (let ((buf-name "*zoxide query*"))
           (when (get-buffer buf-name)
@@ -129,8 +129,8 @@ a list of paths is returned."
   "Similar to `zoxide-query-with', but list all paths instead of matching."
   (interactive)
   (if (called-interactively-p 'any)
-      (funcall-interactively #'zoxide-query-with "-l")
-    (zoxide-query-with "-l")))
+      (funcall-interactively #'zoxide-query-with "-l" "-a")
+    (zoxide-query-with "-l" "-a")))
 
 ;;;###autoload
 (defun zoxide-open-with (query callback &optional noninteractive)
